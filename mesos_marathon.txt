@@ -1,0 +1,76 @@
+									
+									
+									
+									
+									
+																							mesos+zookeeper+marathon的安装和使用
+															
+master：安装mesos+zookeeper+marathon	以下是安装脚本
+
+	#!/bin/sh
+	#
+	apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF
+	DEBIAN_FRONTEND=noninteractive
+	DISTRO=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
+	CODENAME=$(lsb_release -cs)
+
+	if [ $1=hh ];	
+	then
+	echo "deb [arch=amd64] http://repos.mesosphere.com/${DISTRO} ${CODENAME} main" | tee /etc/apt/sources.list.d/mesosphere.list
+	fi
+	apt-get -y update
+	apt-get install -y python-software-properties software-properties-common
+	add-apt-repository ppa:webupd8team/java
+	apt-get install -y oracle-java8-installer oracle-java8-set-default
+	apt-get -y install mesos marathon
+
+slave：安装mesos+docker		以下是安装脚本
+
+	#!/bin/sh
+	apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF
+	DISTRO=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
+	CODENAME=$(lsb_release -cs)
+	if [ $1=hh ]; 
+	then
+	echo "deb [arch=amd64] http://repos.mesosphere.com/${DISTRO} ${CODENAME} main" | tee /etc/apt/sources.list.d/mesosphere.list
+	fi
+	apt-get -y update 
+	apt-get install -y mesos
+	
+	
+master+slave    我们这边按照3主2从来做案例
+
+	master:192.168.102.1
+	master:192.168.102.2
+	master:192.168.102.3
+						slave:192.168.102.4
+						slave:192.168.102.5
+	
+	配置第一步：
+				分别在5台服务器里面编写自己加另外4台的hosts文件，指定域名和IP	如：192.168.102.1	master1		以此类推,域名的名称自己最好改下自己的主机名，来对应IP，修改主机名：vim /etc/hostname，然后在里面改下自己好记的主机名
+																					192.168.102.2	master2																>然后重启机器才会生效
+																					192.168.102.3	master3
+																					192.168.102.4	slave1
+																					192.168.102.5	slave2
+	配置第二步：
+				master中的操作：分别给zookeeper编写一个ID名字来区分名字，在/var/lib/zookeeper/myid配置，在配置文件里面写1，以此类推	 
+				>然后再去zookeeper的配置文件中/etc/zookeeper/conf/zoo.cfg来添加3台master的IP地址进去	配置文件中的第20行后面那块改写		如：server.1=192.168.102.1:2888:3888
+																																				server.2=192.168.102.2:2888:3888
+																																				server.3=192.168.102.3:2888:3888
+	配置第三步：
+				在master+slave中的配置文件/etc/mesos/zk下配置3个master的地址	主从五台机器都需要添加	格式如：zk://192.168.102.1:2181,192.168.102.2:2181,192.168.102.3:2181/mesos
+	配置第四步：
+				分别给5台机器mesos中添加自己的hostname记录
+															master中添加如：echo 192.168.102.1 > /etc/mesos-master/hostname
+															slave中添加如：echo 192.168.102.4 > /etc/mesos-slave/hostname
+	配置第五步：
+				master中的操作：echo 2 > /etc/mesos-master/quorum
+				
+				
+				
+				以上步骤完成后切记：
+									master中启动的服务：service marathon start      service zookeeper start     service mesos-master start    关闭的服务：service mesos-slave stop
+									slave中启动的服务：	service mesos-slave start 	关闭的服务：service mesos-master stop  service zookeeper stop
+				
+				
+				
