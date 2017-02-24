@@ -8,10 +8,10 @@ dhcp_conf=/etc/dhcp/dhcpd.conf
 #########################
 hostIP=192.168.102.18
 #########################
-echo "subnet ${hostIP%.*}.0 netmask 255.255.255.0 {"    >> ${dhcp_conf}
+echo "subnet ${hostIP%.*}.0 netmask 255.255.255.0 {"    >  ${dhcp_conf}
 echo "  range ${hostIP%.*}.151 ${hostIP%.*}.190;"       >> ${dhcp_conf}
-echo "  option domain-name-servers ${hostIP%.*};"       >> ${dhcp_conf}
-echo "  option domain-name "${hostIP}";"                >> ${dhcp_conf}
+echo "  option domain-name-servers ${hostIP%};"         >> ${dhcp_conf}
+echo "  option domain-name /"${hostIP}/";"              >> ${dhcp_conf}
 echo "  option routers ${hostIP%.*}.1;"                 >> ${dhcp_conf}
 echo "  option broadcast-address ${hostIP%.*}.255;"     >> ${dhcp_conf}
 echo "  next-server ${hostIP};"                         >> ${dhcp_conf}
@@ -38,15 +38,15 @@ cp -R ${filepath}/initrd.gz ${tftppath}/
 cp -R ${filepath}/linux ${tftppath}/
 cp -R ${filepath}/pxelinux.0 ${tftppath}/
 cp -R ${filepath}/pxelinux.cfg/ ${tftppath}/
-echo "" > ${tftppath}/pxelinux.cfg/default
-echo "default install"                  ${tftppath}/pxelinux.cfg/default
-echo "label install"                    ${tftppath}/pxelinux.cfg/default
-echo "        menu label ^Install"      ${tftppath}/pxelinux.cfg/default
-echo "        menu default"             ${tftppath}/pxelinux.cfg/default
-#echo "        kernel ubuntu-installer/amd64/linux"      ${tftppath}/pxelinux.cfg/default
-echo "        kernel linux"      ${tftppath}/pxelinux.cfg/default
-#echo "        append vga=788 initrd=ubuntu-installer/amd64/initrd.gz url=http://${hostIP}/install/preseed.cfg"  ${tftppath}/pxelinux.cfg/default
-echo "        append vga=788 initrd=initrd.gz url=http://${hostIP}/install/preseed.cfg"  ${tftppath}/pxelinux.cfg/default
+echo ""                                >  ${tftppath}/pxelinux.cfg/default
+echo "default install"                 >> ${tftppath}/pxelinux.cfg/default
+echo "label install"                   >> ${tftppath}/pxelinux.cfg/default
+echo "        menu label ^Install"     >> ${tftppath}/pxelinux.cfg/default
+echo "        menu default"            >> ${tftppath}/pxelinux.cfg/default
+#echo "        kernel ubuntu-installer/amd64/linux"  >> ${tftppath}/pxelinux.cfg/default
+echo "        kernel linux"            >> ${tftppath}/pxelinux.cfg/default
+#echo "        append vga=788 initrd=ubuntu-installer/amd64/initrd.gz url=http://${hostIP}/install/preseed.cfg" >> ${tftppath}/pxelinux.cfg/default
+echo "        append vga=788 initrd=initrd.gz url=http://${hostIP}/install/preseed.cfg"   >> ${tftppath}/pxelinux.cfg/default
 
 service isc-dhcp-server restart
 service tftpd-hpa restart
