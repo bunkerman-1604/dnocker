@@ -11,7 +11,7 @@ hostIP=192.168.102.18
 echo "subnet ${hostIP%.*}.0 netmask 255.255.255.0 {"    >  ${dhcp_conf}
 echo "  range ${hostIP%.*}.151 ${hostIP%.*}.190;"       >> ${dhcp_conf}
 echo "  option domain-name-servers ${hostIP%};"         >> ${dhcp_conf}
-echo "  option domain-name /"${hostIP}/";"              >> ${dhcp_conf}
+echo "  option domain-name \"${hostIP}\";"              >> ${dhcp_conf}
 echo "  option routers ${hostIP%.*}.1;"                 >> ${dhcp_conf}
 echo "  option broadcast-address ${hostIP%.*}.255;"     >> ${dhcp_conf}
 echo "  next-server ${hostIP};"                         >> ${dhcp_conf}
@@ -30,7 +30,7 @@ cp -a /mnt/* /var/www/ubuntu/
 
 echo "d-i live-installer/net-image string http://${hostIP}/install/filesystem.squashfs" >       /var/www/ubuntu/install/preseed.cfg
 
-sed -i "Docu/cDocumentRoot /var/www/ubuntu" /etc/apache2/sites-available/000-default.conf
+sed -i "/Docu/cDocumentRoot /var/www/ubuntu" /etc/apache2/sites-available/000-default.conf
 
 filepath=/var/www/ubuntu/install/netboot/ubuntu-installer/amd64
 tftppath=/var/lib/tftpboot
