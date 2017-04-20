@@ -1,4 +1,5 @@
 #wget -qO- https://get.docker.com/ | sh                 #
+#https://docs.docker.com/engine/installation/linux/ubuntu/#install-from-a-package
 #                                                       #
 #import export.tar                                      #
 #cat /home/export.tar | docker import - targit:latest   #
