@@ -19,3 +19,16 @@ sed -i "/^#http_access deny all/,+0a http_access allow all"       /etc/squid3/sq
 #acl auth_user proxy_auth sam
 #http_access allow auth_user
 service squid3 restart
+
+#run build a virtual network 
+#docker run \
+#    --name l2tp-ipsec-vpn-server \
+#    --env-file ./vpn.env \
+#    -p 500:500/udp \
+#    -p 4500:4500/udp \
+#    -v /lib/modules:/lib/modules:ro \
+#    -d --privileged \
+#    fcojean/l2tp-ipsec-vpn-server
+#VPN_IPSEC_PSK=a_little_vpn_2017
+#VPN_USER_CREDENTIAL_LIST=[{"login":"u1","password":"j1"},{"login":"u2","password":"t2"}]
+#VPN_NETWORK_INTERFACE=eth0
