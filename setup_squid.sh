@@ -32,3 +32,6 @@ service squid3 restart
 #VPN_IPSEC_PSK=a_little_vpn_2017
 #VPN_USER_CREDENTIAL_LIST=[{"login":"u1","password":"j1"},{"login":"u2","password":"t2"}]
 #VPN_NETWORK_INTERFACE=eth0
+
+#win7/8/10 register table setting
+#REG ADD HKLM\SYSTEM\CurrentControlSet\Services\PolicyAgent /v AssumeUDPEncapsulationContextOnSendRule /t REG_DWORD /d 0x2 /f
